@@ -144,10 +144,15 @@ This removes both resource groups (AKS deletes `rg-aks-lab-tf-nodes` together wi
 the cluster). Afterwards, `az group list --query "[?starts_with(name,'rg-aks-lab-tf')]" -o table`
 should return nothing.
 
+Measured on 2026-11-16 (germanywestcentral, local state):
+
 | Operation | Duration |
 |---|---|
-| `terraform destroy` | _TODO (step 8)_ |
-| `terraform apply` (full rebuild) | _TODO (step 8)_ |
+| `terraform destroy` | 5:20 min |
+| `terraform apply` (full rebuild from empty subscription) | 10:02 min |
+
+Most of the apply time is the cluster with its system pool, followed by the user pool;
+network, identity, ACR and role assignments take well under a minute.
 
 ## Cost notes
 
@@ -163,7 +168,7 @@ This is a lab sized for minimum cost; destroy it when not in use.
 
 The VMs are the main cost driver. Options, cheapest first:
 
-1. `terraform destroy`: nothing is billed. A rebuild takes only minutes (see above).
+1. `terraform destroy`: nothing is billed. A full rebuild takes about 10 minutes (see above).
 2. `az aks stop -g rg-aks-lab-tf -n aks-lab-tf`: stops all nodes; disks, public IP
    and ACR are still billed. `az aks start` resumes it.
 3. Scale the user pool to 0 (`node_count = 0`) and keep only the system node.
