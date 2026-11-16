@@ -1,0 +1,14 @@
+# Copy to terraform.tfvars (git-ignored) and fill in your values.
+#   Copy-Item terraform.tfvars.example terraform.tfvars
+
+# Optional: leave commented to use the Azure CLI default subscription.
+# subscription_id = "00000000-0000-0000-0000-000000000000"
+
+owner        = "Your Name"
+delete_after = "2026-12-31"
+
+# Globally unique, lowercase letters and digits only.
+acr_name = "acrakslabtf<suffix>"
+
+# az ad signed-in-user show --query id -o tsv
+admin_user_object_id = "00000000-0000-0000-0000-000000000000"

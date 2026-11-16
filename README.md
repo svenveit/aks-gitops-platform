@@ -23,11 +23,36 @@ _TODO (step 7)_
 
 ## Prerequisites
 
-_TODO (step 2)_
+| Tool | Version used |
+|---|---|
+| Terraform | 1.17.x |
+| Azure CLI | 2.92+ |
+| kubectl / kubelogin | `az aks install-cli` |
+
+Azure permissions: **Owner** on the target subscription (needed for role assignments).
+No Entra directory roles are required: Entra integration is AKS-managed (no app
+registrations), and all role assignments are Azure RBAC.
+
+Resource providers `Microsoft.ContainerService`, `Microsoft.Network`,
+`Microsoft.ContainerRegistry`, `Microsoft.ManagedIdentity` and `Microsoft.Compute`
+must already be registered. The provider is configured with
+`resource_provider_registrations = "none"` and will not register them.
 
 ## Deploy
 
-_TODO (step 2)_
+```powershell
+az login --tenant <tenant-id>
+az account set --subscription <subscription-id>
+
+cd infra/terraform
+Copy-Item terraform.tfvars.example terraform.tfvars   # then edit the values
+terraform init
+terraform plan -out tfplan
+terraform apply tfplan
+```
+
+Authentication uses the Azure CLI token. State is local (`terraform.tfstate`, git-ignored);
+a commented `backend "azurerm"` block in `versions.tf` is prepared for remote state.
 
 ## Connect to the cluster
 
