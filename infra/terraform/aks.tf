@@ -153,3 +153,40 @@ resource "azurerm_kubernetes_cluster" "main" {
     azurerm_role_assignment.aks_control_plane_network_contributor,
   ]
 }
+
+# --- User node pool ------------------------------------------------------
+# Separate resource (not a second block in the cluster) so it can be changed,
+# scaled or replaced without touching the cluster or the system pool.
+resource "azurerm_kubernetes_cluster_node_pool" "user" {
+  name                  = "user"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
+  mode                  = "User"
+
+  # B-series (burstable) is the cheapest option for mostly idle lab workloads.
+  vm_size = "Standard_B2as_v2"
+
+  auto_scaling_enabled = false
+  node_count           = 1
+
+  # Without this the pool gets the "latest recommended" version at creation time,
+  # which could differ from the cluster's minor version.
+  orchestrator_version = var.kubernetes_version
+
+  os_type         = "Linux"
+  os_sku          = "Ubuntu"
+  os_disk_size_gb = 64
+  max_pods        = 110
+
+  # Same subnet as the system pool; with CNI Overlay nodes need one IP each.
+  vnet_subnet_id = azurerm_subnet.aks_nodes.id
+
+  # No node_taints: this pool takes all regular workloads.
+
+  temporary_name_for_rotation = "usertmp"
+
+  upgrade_settings {
+    max_surge = "10%"
+  }
+
+  tags = local.tags
+}
