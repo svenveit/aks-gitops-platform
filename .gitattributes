@@ -1,0 +1,3 @@
+# Normalize line endings so files written on Windows stay LF in the repo
+# (keeps diffs clean and YAML/shell files usable on Linux runners later).
+* text=auto eol=lf
