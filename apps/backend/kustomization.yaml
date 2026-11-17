@@ -5,5 +5,4 @@ namespace: backend
 resources:
   - podinfo-deployment.yaml
   - podinfo-service.yaml
-  - podinfo-pdb.yaml
   - network-policy-allow-client.yaml
