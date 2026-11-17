@@ -1,0 +1,26 @@
+# Opens a hole in default-deny-ingress: only the client pods from the frontend
+# namespace may reach podinfo, and only on its HTTP port.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-from-client
+spec:
+  podSelector:
+    matchLabels:
+      app: podinfo
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        # Both selectors in ONE list item = AND (client pods in namespace frontend).
+        # As two separate items they would be OR (any pod in frontend, or any
+        # app=client pod in the backend namespace).
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
+          podSelector:
+            matchLabels:
+              app: client
+      ports:
+        - protocol: TCP
+          port: 9898

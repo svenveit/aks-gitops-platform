@@ -1,0 +1,7 @@
+# Demo workloads, reconciled by the Flux Kustomization "apps"
+# (depends on "infrastructure", which creates the namespaces).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - backend
+  - frontend

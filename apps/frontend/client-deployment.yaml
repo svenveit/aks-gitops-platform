@@ -1,0 +1,41 @@
+# Test client for `kubectl exec ... -- curl`. It serves nothing, it only sleeps.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      # sleep runs as PID 1 and ignores SIGTERM, so without this every rollout or
+      # delete would wait the default 30 s before the pod is killed.
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: curl
+          # Official curl image (~10 MB, Alpine based); its entrypoint is curl, so override it.
+          image: curlimages/curl:8.23.0
+          command:
+            - sleep
+            - infinity
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault

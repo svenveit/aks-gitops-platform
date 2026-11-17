@@ -1,0 +1,7 @@
+# Cluster-wide baseline, reconciled by the Flux Kustomization "infrastructure".
+# "apps" depends on it, so namespaces and default-deny policies exist before any workload.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespaces.yaml
+  - network-policies.yaml

@@ -1,0 +1,25 @@
+# Default-deny baselines. NetworkPolicies are additive allow-lists: once a pod is
+# selected by a policy for a direction, only traffic explicitly allowed by some
+# policy passes. The allow rules live next to the workloads in apps/.
+
+# backend: nothing may connect to pods in this namespace unless allowed.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: backend
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# frontend: pods may not open any connection (not even DNS) unless allowed.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress
+  namespace: frontend
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
