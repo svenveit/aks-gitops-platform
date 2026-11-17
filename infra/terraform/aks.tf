@@ -162,8 +162,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.main.id
   mode                  = "User"
 
-  # B-series (burstable) is the cheapest option for mostly idle lab workloads.
-  vm_size = "Standard_B2as_v2"
+  # B2as_v2 hit AllocationFailed in germanywestcentral; D2as_v5 matches the system pool.
+  vm_size = "Standard_D2as_v5"
 
   auto_scaling_enabled = false
   node_count           = 1
