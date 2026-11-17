@@ -110,3 +110,17 @@ variable "admin_user_object_id" {
     error_message = "admin_user_object_id must be a GUID."
   }
 }
+
+# --- GitOps ----------------------------------------------------------------
+
+variable "gitops_repo_url" {
+  description = "HTTPS URL of the Git repository Flux reconciles from (public, no auth)."
+  type        = string
+  default     = "https://github.com/svenveit/aks-gitops-platform"
+}
+
+variable "gitops_branch" {
+  description = "Branch Flux tracks. Changes take effect only after they are pushed to it."
+  type        = string
+  default     = "main"
+}

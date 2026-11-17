@@ -28,3 +28,13 @@ output "get_credentials_command" {
   # --subscription makes the command work regardless of the current `az account` context.
   value = "az aks get-credentials --resource-group ${azurerm_resource_group.main.name} --name ${azurerm_kubernetes_cluster.main.name} --subscription ${data.azurerm_client_config.current.subscription_id} --overwrite-existing"
 }
+
+output "flux_configuration_name" {
+  description = "Name of the Flux configuration (Flux objects are prefixed with it)."
+  value       = azurerm_kubernetes_flux_configuration.platform.name
+}
+
+output "flux_compliance_command" {
+  description = "Shows the Flux configuration's compliance state as seen by Azure (needs the k8s-configuration CLI extension)."
+  value       = "az k8s-configuration flux show --resource-group ${azurerm_resource_group.main.name} --cluster-name ${azurerm_kubernetes_cluster.main.name} --cluster-type managedClusters --name ${azurerm_kubernetes_flux_configuration.platform.name} --query \"{compliance:complianceState, provisioning:provisioningState}\" -o table"
+}
